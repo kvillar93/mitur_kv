@@ -10,7 +10,7 @@
     "category": "Reporting",
     "author": "GRAP,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/reporting-engine",
-    "depends": ["base", "sql_request_abstract"],
+    "depends": ["base", "sql_request_abstract","account_payment"],
     "data": [
         "security/ir.model.access.csv",
         "views/view_bi_sql_view.xml",
