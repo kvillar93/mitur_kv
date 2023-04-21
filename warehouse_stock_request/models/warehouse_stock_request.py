@@ -10,18 +10,17 @@ class CustomWarehouseStockRequest(models.Model):
 
     name = fields.Char(
         string="Name",
-        readonly= True
+        readonly= True,copy=False
     )
     partner_id = fields.Many2one(
         'res.partner',
-        string="Contact",
-        required= True,
+        string="Contacto",
         readonly=True,
         copy=False,
         states={'draft': [('readonly', False)],'confirmed': [('readonly', False)]}
     )
     request_date = fields.Datetime(
-        string="Requested Date",
+        string="Fecha de Solicitud",
         default=lambda self: fields.Datetime.now(),
         required= True,
         readonly=True,
@@ -30,28 +29,28 @@ class CustomWarehouseStockRequest(models.Model):
     )
     picking_type_id = fields.Many2one(
         'stock.picking.type',
-        string="Operation Type",
+        string="Tipo de Operacion",
         required= True,
         readonly=True,
         states={'draft': [('readonly', False)],'confirmed': [('readonly', False)]}
     )
     location_id = fields.Many2one(
         'stock.location',
-        string="Source Location",
+        string="Ubicacion Origen",
         required= True,
         readonly=True,
         states={'draft': [('readonly', False)],'confirmed': [('readonly', False)]}
     )
     location_dest_id = fields.Many2one(
         'stock.location',
-        string="Destination Location",
+        string="Ubicacion Destino",
         required= True,
         readonly=True,
         states={'draft': [('readonly', False)],'confirmed': [('readonly', False)]}
     )
     company_id = fields.Many2one(
         'res.company',
-        string='Company', 
+        string='Compañia', 
         store=True, 
         change_default=True,
         required= True,
@@ -61,16 +60,15 @@ class CustomWarehouseStockRequest(models.Model):
     )
     created_user_id = fields.Many2one(
         'res.users',
-        string="Created By",
+        string="Creado Por",
         readonly=True,
         default=lambda self: self.env.user,
         copy=False
     )
     approve_user_id = fields.Many2one(
         'res.users',
-        string="Approved By",
-        readonly=True,
-        copy=False
+        string="Aprobador",
+        copy=False, required=True
     )
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -79,18 +77,18 @@ class CustomWarehouseStockRequest(models.Model):
         ('done', 'Received'),
         ('cancel', 'Cancelled')],
         default='draft',
-        string="Status",
+        string="Estado",
         copy=False
     )
     warehouse_stock_request_line_ids = fields.One2many(
         'custom.warehouse.stock.request.line',
         'stock_request_id',
-        string="Request Lines",
+        string="Lineas de Solicitud",
         readonly=True,
         states={'draft': [('readonly', False)],'confirmed': [('readonly', False)]}
     )
     note = fields.Text(
-        string="Notes",
+        string="Notas",
         readonly=True,
         copy=True,
         states={'draft': [('readonly', False)],'confirmed': [('readonly', False)]}
@@ -216,16 +214,16 @@ class CustomWarehouseStockRequestLine(models.Model):
 
     stock_request_id = fields.Many2one(
         'custom.warehouse.stock.request',
-        string="Warehouse Stock Request",
+        string="Solicitud de Almacen",
         copy=False,
     )
     product_id = fields.Many2one(
         'product.product',
-        string="Product",
+        string="Productos",
         required= True
     )
     description = fields.Char(
-        string='Description',
+        string='Descripcion',
         required=True,
     )
     product_uom = fields.Many2one(
@@ -234,11 +232,11 @@ class CustomWarehouseStockRequestLine(models.Model):
         required= True
     )
     demand_qty = fields.Float(
-        string="Demand Qty",
+        string="Cantidad Demandada",
         required= True
     )
     company_id = fields.Many2one(
-        string='Company', 
+        string='Compañia', 
         store=True, 
         readonly=True,
         related='stock_request_id.company_id', 
