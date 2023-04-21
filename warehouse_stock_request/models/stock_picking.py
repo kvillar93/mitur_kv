@@ -1,6 +1,95 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models, _
+import re
+from markupsafe import Markup
+from odoo import api, fields, Command, models, _
+from odoo.tools import float_round
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools import email_split, float_is_zero, float_repr, float_compare, is_html_empty
+from odoo.tools.misc import clean_context, format_date
+
+class HrExpense(models.Model):
+    _inherit = "hr.expense.sheet"
+    
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('submit', 'Submitted'),
+        ('approve', 'Approved'),
+        ('rev_rrhh', 'Revisado RRHH'),
+        ('apr_rrhh', 'Aprobado RRHH'),
+        ('adm_val', 'Validado Vice ADM'),
+        ('apr_adm', 'Aprobado Vice ADM'),
+        ('post', 'Posted'),
+        ('done', 'Pagado'),
+        ('aut_fin', 'Autorizado Financiero'),
+        ('rev_ad', 'Revisión Auditoría'),
+        ('firma_orden_pago_vice_adm', 'Firma Vice ADM'),
+        ('desemb', 'Desembolso'),
+        ('cancel', 'Refused')
+    ], string='Status', index=True, readonly=True, tracking=True, copy=False, default='draft', required=True)
+    
+    
+    def button_rev_rrhh(self):
+        for rec in self:
+            rec.write({'state':'rev_rrhh'})
+    
+    def button_apr_rrhh(self):
+        for rec in self:
+            rec.write({'state':'apr_rrhh'})
+    
+    def button_adm_val(self):
+        for rec in self:
+            rec.write({'state':'adm_val'})
+            
+    def button_apr_adm(self):
+        for rec in self:
+            rec.write({'state':'apr_adm'})
+    
+    def button_aut_fin(self):
+        for rec in self:
+            rec.write({'state':'aut_fin'})
+            
+    def button_rev_ad(self):
+        for rec in self:
+            rec.write({'state':'rev_ad'})
+
+    def button_firma_orden_pago_vice_adm(self):
+        for rec in self:
+            rec.write({'state':'firma_orden_pago_vice_adm'})
+    
+    def button_desemb(self):
+        for rec in self:
+            rec.write({'state':'desemb'})
+            
+    def action_sheet_move_create(self):
+        samples = self.mapped('expense_line_ids.sample')
+        if samples.count(True):
+            if samples.count(False):
+                raise UserError(_("You can't mix sample expenses and regular ones"))
+            self.write({'state': 'post'})
+            return 
+
+        if any(sheet.state != 'apr_adm' for sheet in self):
+            raise UserError(_("Solo puede generar las entradas de libro para viaticos aprobados por la Vice Administracion. Estado: %s", self.state))
+
+        if any(not sheet.journal_id for sheet in self):
+            raise UserError(_("Specify expense journal to generate accounting entries."))
+
+        expense_line_ids = self.mapped('expense_line_ids')\
+            .filtered(lambda r: not float_is_zero(r.total_amount, precision_rounding=(r.currency_id or self.env.company.currency_id).rounding))
+        res = expense_line_ids.with_context(clean_context(self.env.context)).action_move_create()
+
+        paid_expenses_company = self.filtered(lambda m: m.payment_mode == 'company_account')
+        paid_expenses_company.write({'state': 'done', 'amount_residual': 0.0, 'payment_state': 'paid'})
+
+        paid_expenses_employee = self - paid_expenses_company
+        paid_expenses_employee.write({'state': 'post'})
+
+        self.activity_update()
+        return res
+
+
+
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
