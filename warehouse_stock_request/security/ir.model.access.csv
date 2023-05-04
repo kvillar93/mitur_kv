@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-custom_warehouse_stock_request_manager,custom.warehouse.stock.request.manager,warehouse_stock_request.model_custom_warehouse_stock_request,stock.group_stock_user,1,1,1,1
-custom_warehouse_stock_request_line_manager,custom.warehouse.stock.request.line.manager,warehouse_stock_request.model_custom_warehouse_stock_request_line,stock.group_stock_user,1,1,1,1
