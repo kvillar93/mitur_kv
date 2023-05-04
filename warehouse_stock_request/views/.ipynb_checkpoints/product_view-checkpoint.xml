@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>  
+        <record id="custom_warehouse_stock_request_product_normal_action" model="ir.actions.act_window">
+            <field name="name">Product Variants</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="search_view_id" ref="stock.stock_product_search_form_view"/>
+        </record>
+    </data>
+</odoo>

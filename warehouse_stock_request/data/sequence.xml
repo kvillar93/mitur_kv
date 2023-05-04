@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="seq_custom_warehouse_stock_request" model="ir.sequence">
+            <field name="name">Warehouse Stock Request</field>
+            <field name="code">custom.warehouse.stock.request</field>
+            <field name="prefix">WSR/</field>
+            <field name="padding">6</field>
+        </record>
+
+    </data>
+</odoo>

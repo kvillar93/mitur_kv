@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="report_custom_warehouse_stock_request_document">
+            <t t-call="web.external_layout">
+                <t t-set="doc" t-value="doc.with_context()" />
+                <div class="page">
+                    <div class="oe_structure"/>
+
+                    <h3 class="mt16">
+                        <b><span t-field="doc.name"/></b>
+                    </h3>
+                    <br/>
+                    <div class="row">
+                        <div class="col-6">
+                            <table class="table" style="width:100%;">
+                                <tr style="border-top:hidden; border-bottom:hidden;">
+                                    <td style="width:40%;">
+                                        <strong>Contact :</strong>
+                                    </td>
+                                    <td style="width:60%;">
+                                        <span t-field="doc.partner_id"/>
+                                    </td>
+                                </tr>
+                                <tr style="border-top:hidden; border-bottom:hidden;">
+                                    <td style="width:40%;">
+                                        <strong>Operation Type :</strong>
+                                    </td>
+                                    <td style="width:60%;">
+                                        <span t-field="doc.picking_type_id"/>
+                                    </td>
+                                </tr>
+                                <tr style="border-top:hidden; border-bottom:hidden;">
+                                    <td style="width:40%;">
+                                        <strong>Source Location :</strong>
+                                    </td>
+                                    <td style="width:60%;">
+                                        <span t-field="doc.location_id"/>
+                                    </td>
+                                </tr>
+                                <tr style="border-top:hidden; border-bottom:hidden;">
+                                    <td style="width:40%;">
+                                        <strong>Destination Location :</strong>
+                                    </td>
+                                    <td style="width:60%;">
+                                        <span t-field="doc.location_dest_id"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <table class="table" style="width:100%;">
+                                <tr style="border-top:hidden; border-bottom:hidden;">
+                                    <td style="width:40%;">
+                                        <strong>Requested Date :</strong>
+                                    </td>
+                                    <td style="width:60%;">
+                                        <span t-field="doc.request_date"/>
+                                    </td>
+                                </tr>
+                                <tr style="border-top:hidden; border-bottom:hidden;">
+                                    <td style="width:40%;">
+                                        <strong>Company :</strong>
+                                    </td>
+                                    <td style="width:60%;">
+                                        <span t-field="doc.company_id"/>
+                                    </td>
+                                </tr>
+                                <tr style="border-top:hidden; border-bottom:hidden;">
+                                    <td style="width:40%;">
+                                        <strong>Created By :</strong>
+                                    </td>
+                                    <td style="width:60%;">
+                                        <span t-field="doc.created_user_id"/>
+                                    </td>
+                                </tr>
+                                <tr style="border-top:hidden; border-bottom:hidden;">
+                                    <td style="width:40%;">
+                                        <strong>Approved By :</strong>
+                                    </td>
+                                    <td style="width:60%;">
+                                        <span t-field="doc.approve_user_id"/>
+                                    </td>
+                                </tr>
+                                <tr style="border-top:hidden; border-bottom:hidden;">
+                                    <td style="width:40%;">
+                                        <strong>Status :</strong>
+                                    </td>
+                                    <td style="width:60%;">
+                                        <span t-field="doc.state"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-12">
+                            <h4 class="mt16">
+                                <strong>Request Lines</strong>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-sm o_main_table mt16">
+                                <thead>
+                                    <tr>
+                                        <th name="th_description" class="text-left">Product</th>
+                                        <th name="th_quantity" class="text-left">Description</th>
+                                        <th name="th_quantity" class="text-right">Demand Qty</th>
+                                        <th name="th_quantity" class="text-left">UOM</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="sale_tbody">
+                                        <t t-foreach="doc.warehouse_stock_request_line_ids" t-as="line">
+                                            <tr>
+                                                <td>
+                                                   <span t-esc="line.product_id.name"/>
+                                                </td>
+                                                <td class="text-left">
+                                                    <span t-esc="line.description"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-field="line.demand_qty"/>
+                                                </td>
+                                                <td class="text-left">
+                                                    <span t-field="line.product_uom"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <h4 class="col-12 mt16">
+                            <strong>Notes</strong>
+                        </h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <span t-field="doc.note"/>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-2">
+                            <table class="table">
+                                <tr style="border-top:hidden; border-bottom:hidden;">
+                                    <td style="text-align:center;">
+                                        <strong>Sender Signature</strong>
+                                    </td>
+                                </tr>
+                                <tr style="border-top:hidden">
+                                    <td style="height:70px">
+                                        
+                                    </td>
+                                </tr>
+                                <tr style="border-top:hidden; border-bottom:hidden; background-color:#FF111">
+                                    <td>
+                                        <span>_______/_______/______________</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div class="col-7"/>
+                        <div class="col-3">
+                            <table class="table">
+                                <tr style="border-top:hidden; border-bottom:hidden;">
+                                    <td style="text-align:center;">
+                                        <strong>Receiver Signature</strong>
+                                    </td>
+                                </tr>
+                                <tr style="border-top:hidden">
+                                    <td style="height:70px">
+                                        
+                                    </td>
+                                </tr>
+                                <tr style="border-top:hidden; border-bottom:hidden; background-color:#FF111">
+                                    <td>
+                                        <span>_______/_______/______________</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="report_custom_warehouse_stock_request">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="warehouse_stock_request.report_custom_warehouse_stock_request_document"/>
+                </t>
+            </t>
+        </template>
+        <record id="action_custom_warehouse_stock_request" model="ir.actions.report">
+            <field name="name">Print Stock Request</field>
+            <field name="model">custom.warehouse.stock.request</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">warehouse_stock_request.report_custom_warehouse_stock_request</field>
+            <field name="report_file">warehouse_stock_request.report_custom_warehouse_stock_request</field>
+            <field name="binding_model_id" ref="warehouse_stock_request.model_custom_warehouse_stock_request"/>
+            <field name="binding_type">report</field>
+        </record>
+
+    </data>
+</odoo>

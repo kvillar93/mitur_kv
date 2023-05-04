@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="custom_warehouse_stock_request_form_view" model="ir.ui.view">
+            <field name="name">custom.warehouse.stock.request.form</field>
+            <field name="model">custom.warehouse.stock.request</field>
+            <field name="arch" type="xml">
+                <form string="Warehouse Stock Request">
+                    <header>
+                        <button name="action_warehouse_stock_request_send" string="Send by Email" type="object" class="btn-primary"/>
+                        <button name="custom_action_draft" string="Reset to Draft" type="object" class="oe_highlight"  states="cancel"/>
+                        <button name="custom_action_confirmed" string="Confirm" type="object" class="oe_highlight" states="draft" groups="stock.group_stock_user"/>
+                        <button name="custom_action_approved" string="Create Picking" type="object" class="oe_highlight" states="confirmed" groups="stock.group_stock_manager"/>
+                        <button name="custom_action_done" string="Done" type="object" class="oe_highlight" states="approved"/>
+                        <button name="custom_action_cancel" string="Cancel" type="object" states="draft,waiting,confirmed,approved"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,waiting,confirmed,approved,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="show_transfers_picking" string="Transfers" icon="fa-truck"/>
+                            <button class="oe_stat_button" type="object" name="show_product_on_hand" string="On Hand" icon="fa-cubes"/>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="picking_type_id"/>
+                                <field name="location_id"/>
+                                <field name="location_dest_id"/>
+                            </group>
+                            <group>
+                                <field name="request_date"/>
+                                <field name="company_id"/>
+                                <field name="created_user_id"/>
+                                <field name="approve_user_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="request_lines" string="Request Lines">
+                                <field name="warehouse_stock_request_line_ids" mode="tree">
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="product_id"/>
+                                                <field name="description"/>
+                                                <field name="product_uom"/>
+                                            </group>
+                                            <group>
+                                                <field name="demand_qty"/>
+                                                <field name="company_id"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <tree string="Stock Request Lines" editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="description"/>
+                                        <field name="demand_qty"/>
+                                        <field name="product_uom"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Notes" name="note">
+                                <field name="note"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="custom_warehouse_stock_request_tree_view" model="ir.ui.view">
+            <field name="name">custom.warehouse.stock.request.tree</field>
+            <field name="model">custom.warehouse.stock.request</field>
+            <field name="arch" type="xml">
+                <tree string="Warehouse Stock Request">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="picking_type_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="request_date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="custom_warehouse_stock_request_kanban_view" model="ir.ui.view">
+            <field name="name">custom.warehouse.stock.request.kanban</field>
+            <field name="model">custom.warehouse.stock.request</field>
+            <field name="priority" eval="100"/>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" archivable="false" sample="1">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="created_user_id"/>
+                    <field name="picking_type_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="request_date"/>
+                    <field name="company_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_content oe_kanban_global_click">
+                                <div>
+                                    <strong>
+                                        <span>
+                                            <field name="name"/>
+                                        </span>
+                                    </strong>
+                                    <hr/>
+                                </div>
+                                <div>
+                                    <span class="o_kanban_record_subtitle"><i class="fa fa-user" title="Customer"/>  <field name="partner_id"/></span>
+                                </div>
+                                <div>
+                                    <span class="o_kanban_record_subtitle"><i class="fa fa-cog" title="Operation Type"/>  <field name="picking_type_id"/></span>
+                                </div>
+                                <div>
+                                    <span class="o_kanban_record_subtitle"><i class="fa fa-truck" title="Source Location"/>  <field name="location_id"/></span>
+                                </div>
+                                 <div>
+                                    <span class="o_kanban_record_subtitle"><i class="fa fa-truck fa-flip-horizontal" title="Destination Location"/>  <field name="location_dest_id"/></span>
+                                </div>
+                                <div>
+                                    <span class="o_kanban_record_subtitle"><i class="fa fa-industry" title="Company"/>  <field name="company_id"/></span>
+                                    <hr/>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <span class="o_kanban_record_subtitle"><i class="fa fa-clock-o" title="Request Date"/>  <field name="request_date"/></span>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="created_user_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="custom_action_warehouse_stock_request" model="ir.actions.act_window">
+            <field name="name">Warehouse Stock Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">custom.warehouse.stock.request</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_id" ref="warehouse_stock_request.custom_warehouse_stock_request_tree_view"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new warehouse stock request.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>
