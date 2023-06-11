@@ -24,7 +24,7 @@ This app allows your inventory stock user to create warehouse stock requests in 
     'author' : 'Probuse Consulting Service Pvt. Ltd.',
     'website' : 'www.probuse.com',
     'depends' : [
-        'stock',
+        'stock','hr_expense','odoo_cheque_management'
     ],
     'support': 'contact@probuse.com',
     'data' : [
